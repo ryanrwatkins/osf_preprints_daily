@@ -45,25 +45,23 @@ import smtplib
 from email.mime.text import MIMEText
 
 # Set Global Variables
-gmail_user = 'YOU @gmail.com'  
-gmail_password = 'YOUR Gmail App Password'    #this is an app password not your personal password, instructions for setting this up are found at: https://support.google.com/accounts/answer/185833?hl=en
-# Create Email 
+gmail_user = 'YOUR @gmail.com'  
+gmail_password = 'YOUR Gmail APP password'    #this is an app password not your personal password, instructions for setting this up are found at: https://support.google.com/accounts/answer/185833?hl=en
+
+# to and from
 mail_from = gmail_user
-mail_to = 'YOUR EMAIL'
-mail_cc = 'YOU  @kill-the-newsletter.com' #the second email address creates an RSS feed using https://kill-the-newsletter.com/
-mail_subject = 'OSF articles for ' + yesterday
-mail_message_body = MIMEText(todays_articles, 'html') 
+mail_to = ['YOUR @kill-the-newsletter.com', 'YOUR OTHER EMAILS']  #the first email address creates an RSS feed using https://kill-the-newsletter.com/
 
-mail_message = '''\
-From: %s
-To: %s
-CC: %s
-Subject: %s
-%s
-''' % (mail_from, mail_to, mail_cc, mail_subject, mail_message_body)
+# create message
+msg = MIMEText(todays_articles, 'html') 
+msg['Subject'] = 'OSF articles for ' + yesterday
+msg['From'] = mail_from
+msg['To'] = ", ".join(mail_to)   #this allows for multiple recipients
 
-# Sent Email
+# Send
 server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 server.login(gmail_user, gmail_password)
-server.sendmail(mail_from, mail_to, mail_message)
+server.sendmail(mail_from, mail_to, msg.as_string())
 server.close()
+
+
