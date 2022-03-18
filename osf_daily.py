@@ -1,5 +1,7 @@
 # script to get an email with yesterdays osf preprints (typically 30 to 40 per day)
+# I use a free Deepnote.com account to schedule this script to run each day (if you don't want to do that, you can put it on your server and use a CRON to run it each day)
 # in Deepnote you use the drop down from the "run notebook" button to schedule the script to run once a day
+
 import config
 import json
 import requests 
@@ -43,12 +45,12 @@ import smtplib
 from email.mime.text import MIMEText
 
 # Set Global Variables
-gmail_user = 'ryanrwatkins@gmail.com'  
+gmail_user = 'YOU @gmail.com'  
 gmail_password = config.password    #this is an app password not your personal password, instructions for setting this up are found at: https://support.google.com/accounts/answer/185833?hl=en
 # Create Email 
 mail_from = gmail_user
-mail_to = 'rwatkins@email.com'
-mail_cc = 'wn2vf2q2e0p6ucm8@kill-the-newsletter.com' #the second email address creates an RSS feed using https://kill-the-newsletter.com/
+mail_to = 'YOUR EMAIL'
+mail_cc = 'YOU  @kill-the-newsletter.com' #the second email address creates an RSS feed using https://kill-the-newsletter.com/
 mail_subject = 'OSF articles for ' + yesterday
 mail_message_body = MIMEText(todays_articles, 'html') 
 
