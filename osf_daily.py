@@ -27,12 +27,22 @@ while osf_api["links"]["next"]:
 
 # We get the desired information for each article in the api return
 todays_articles = "" 
-for i in enumerate(all_articles):
-    #first we get only the English language articles, then we take out any subject areas we are not interested in
-    if (detect(i[1]['attributes']['description']) == "en") and (i[1]['attributes']['subjects'][0][0]['text'] not in ( "Psychiatry", "Medicine and Health Sciences", "Life Sciences")):      #fields are from https://www.bepress.com/wp-content/uploads/2016/12/bepress_Disciplines_taxonomy.pdf
-        article = "<b>" + i[1]['attributes']['subjects'][0][0]['text'] +"</b><p><b><font size='+2'><a href='" + i[1]['links']['html'] + "' target='_blank'>" + i[1]['attributes']['title'] + "</a></b></font>" +"<br>Open Data: " + i[1]['attributes']['has_data_links'] +"<br>Pre-registration: " + i[1]['attributes']['has_prereg_links']
-        todays_articles += str(article) + "\n\n<p><p>"
 
+for i in enumerate(all_articles):
+    #first we may a list of subject areas we are not interested in based on fields are from https://www.bepress.com/wp-content/uploads/2016/12/bepress_Disciplines_taxonomy.pdf
+    not_interested = ["Psychiatry", "Medicine and Health Sciences", "Life Sciences", "Engineering", "Mathematics", "Chemistry"]
+    # then we make a list of all the subjects and sub-subjects that are listed for the preprint
+    subjects_list = []
+    for subjects in i[1]['attributes']['subjects'][0]:
+        subjects_list.append(subjects['text'])
+    # then we just want English preprints
+    if (detect(i[1]['attributes']['description']) == "en"): 
+        #then we just articles whose subjects are not listed in our not_interested list
+        if not any(x in subjects_list for x in not_interested): 
+            article = "<b>" + i[1]['attributes']['subjects'][0][0]['text'] +"</b><p><b><font size='+2'><a href='" + i[1]['links']['html'] + "' target='_blank'>" + i[1]['attributes']['title'] + "</a></b></font>" +"<br>Open Data: " + i[1]['attributes']['has_data_links'] +"<br>Pre-registration: " + i[1]['attributes']['has_prereg_links']
+            todays_articles += str(article) + "\n\n<p><p>"
+
+            
 # in order to email it we have to add a break \n between the header and message, so we put it at the beginning. We also remove all non-ascii characters.
 todays_articles = "\n" + todays_articles.encode("ascii", errors="ignore").decode()
 
